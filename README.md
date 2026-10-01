@@ -67,7 +67,7 @@ El backend utiliza las siguientes variables de entorno:
 * `SECRETO_JWT`
 * `MINUTOS_SESION`
 
-Estas variables deben configurarse en el archivo `.env`, tomando como referencia el archivo `.env-example`.
+Estas variables deben configurarse en el archivo `.env`, tomando como referencia el archivo `.env-ejemplo`.
 
 ## VARIABLES DE ENTORNO DEL FRONTEND
 
@@ -75,4 +75,4 @@ El frontend utiliza la siguiente variable de entorno:
 
 * `URL_BASE`
 
-Esta variable debe configurarse en el archivo `.env`, tomando como referencia el archivo `.env-example`.
+Esta variable debe configurarse en el archivo `.env`, tomando como referencia el archivo `.env-ejemplo`.
