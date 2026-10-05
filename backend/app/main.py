@@ -4,12 +4,13 @@ from fastapi.responses import JSONResponse
 from app import models
 from app.base_datos import Base, motor
 from app.errores import ErrorDeNegocio
-from app.routers import auth
+from app.routers import auth,mascota
 
 Base.metadata.create_all(bind=motor)
 
 app = FastAPI(title="Mascota al Dia")
 app.include_router(auth.router)
+app.include_router(mascota.router)
 
 
 @app.exception_handler(ErrorDeNegocio)
