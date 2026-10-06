@@ -17,3 +17,22 @@ export function validarContrasena(contrasena: string): string | undefined {
 export function validarConfirmacion(contrasena: string,confirmacion:string): string | undefined{
     if(contrasena !== confirmacion) return "Las contraseñas no coinciden";
 } 
+
+export function validarNombreMascota(nombre: string): string | undefined{
+  if(nombre.trim().length < 1) return "Escribe el nombre de tu mascota";
+  if(nombre.trim().length > 120) return "El nombre de tu mascota no puede tener más de 120 caracteres";
+}
+export function validarEspecie(especie: string): string | undefined{
+    if(especie.trim().length < 1) return "Escribe la especie de tu mascota";
+    if(especie.trim().length > 50) return "La especie de tu mascota no puede tener más de 50 caracteres";
+}
+export function validarCuidado(cuidado: string):string|undefined{
+    if(cuidado.trim().length < 1) return "Escribe el cuidado de tu mascota";
+    if(cuidado.trim().length > 100) return "El cuidado de tu mascota no puede tener más de 100 caracteres";
+}
+export function validarSexo(sexo: string):string|undefined{
+    if(sexo.trim().length < 7) return "Selecciona el sexo de tu mascota";
+}
+export function validarFecha(fecha: string):string|undefined{
+    if(fecha.trim().length < 1) return "Escribe la fecha de cuidado de tu mascota";
+}

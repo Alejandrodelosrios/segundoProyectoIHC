@@ -19,7 +19,7 @@ export class ErrorApi extends Error {
   }
 }
 
-type Opciones = { metodo?: "GET" | "POST"; cuerpo?: unknown };
+type Opciones = { metodo?: "GET" | "POST" | "PUT"|"DELETE"; cuerpo?: unknown };
 
 async function pedir<T>(ruta: string, opciones: Opciones = {}): Promise<T> {
   let respuesta: Response;
@@ -81,5 +81,65 @@ export async function cambiarContrasena(correo: string, codigo: string, contrase
   return pedir<{ mensaje: string }>("/auth/cambiar-contrasena", {
     metodo: "POST",
     cuerpo: { correo, codigo, contrasena_nueva: contrasenaNueva },
+  });
+}
+
+export type Mascota ={
+  id: number;
+  nombre: string;
+  sexo: string;
+  especie: string;
+  cuidado: string;
+  fechaCuidado: string;
+};
+
+export type DatosMascota = Omit<Mascota, "id">;
+
+type MascotaRespuesta ={
+  id:number;
+  nombre: string;
+  sexo: string;
+  especie: string;
+  cuidado: string;
+  fecha_cuidado: string;
+  usuario_id: number;
+};
+
+function convertirMascota(datos: MascotaRespuesta): Mascota {
+ return {id:datos.id, nombre: datos.nombre, sexo: datos.sexo, especie: datos.especie,cuidado: datos.cuidado, fechaCuidado: datos.fecha_cuidado};  
+}
+
+function cuerpoMascota(datos: DatosMascota) {
+  return {
+    nombre: datos.nombre,
+    sexo: datos.sexo,
+    especie: datos.especie,
+    cuidado: datos.cuidado,
+    fecha_cuidado: datos.fechaCuidado,
+  };
+}
+
+export async function listarMascotas() {
+  const datos = await pedir<MascotaRespuesta[]>("/mascotas");
+  return datos.map(convertirMascota);
+}
+
+export async function crearMascota(datos: DatosMascota) {
+  return pedir<MascotaRespuesta>("/mascotas",{
+    metodo: "POST",
+    cuerpo: cuerpoMascota(datos)
+  });   
+}
+
+export async function actualizarMascota(id: number, datos: DatosMascota) {
+ return pedir<MascotaRespuesta>(`/mascotas/${id}`,{
+  metodo: "PUT",
+  cuerpo: cuerpoMascota(datos)
+ });
+}
+
+export async function eliminarMascota(id: number) {
+  return pedir<null>(`/mascotas/${id}`,{
+   metodo: "DELETE"
   });
 }

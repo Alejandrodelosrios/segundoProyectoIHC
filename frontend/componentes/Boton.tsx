@@ -6,6 +6,7 @@ type Props = {
   cargando?: boolean;
   href?: string;
   variante?: "primario" | "secundario";
+  alClic?: () => void;
 };
 
 const estilos = {
@@ -19,6 +20,7 @@ export default function Boton({
   cargando = false,
   href,
   variante = "primario",
+  alClic,
 }: Props) {
   const clases = `rounded-lg px-6 py-3 text-center font-semibold disabled:cursor-not-allowed disabled:opacity-60 ${estilos[variante]}`;
 
@@ -31,7 +33,7 @@ export default function Boton({
   }
 
   return (
-    <button type="submit" disabled={cargando} className={clases}>
+    <button type={alClic ? "button":"submit"} onClick={alClic} disabled={cargando} className={clases}>
       {cargando ? (textoCargando ?? texto) : texto}
     </button>
   );

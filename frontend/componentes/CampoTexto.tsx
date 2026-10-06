@@ -7,7 +7,7 @@ type Props = {
   etiqueta: string;
   valor: string;
   alCambiar: (valor: string) => void;
-  tipo?: "text" | "email" | "password";
+  tipo?: "text" | "email" | "password"|"date";
   error?: string;
   ayuda?: string;
   autoComplete?: string;
