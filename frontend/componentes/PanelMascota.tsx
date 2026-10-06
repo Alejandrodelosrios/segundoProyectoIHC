@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { ErrorApi, eliminarMascota, listarMascotas, type Mascota } from "@/lib/api";
+import { ErrorApi, eliminarMascota, listarMascotas,marcarRealizado, type Mascota } from "@/lib/api";
 import Boton from "./Boton";
 import FormularioMascota from "./FormularioMascota";
 import MensajeError from "./MensajeError";
@@ -51,6 +51,16 @@ export default function PanelMascotas() {
     }
   }
 
+  async function realizar(mascota: Mascota) {
+  setError("");
+  try {
+    await marcarRealizado(mascota.id);
+    await cargar();
+  } catch (e) {
+    setError(e instanceof ErrorApi ? e.message : "Ocurrió un error inesperado");
+  }
+}
+
   function alGuardar() {
     setFormularioAbierto(false);
     cargar();
@@ -86,6 +96,7 @@ export default function PanelMascotas() {
               mascota={mascota}
               alEditar={abrirEdicion}
               alEliminar={borrar}
+              alRealizar={realizar}
             />
           ))}
         </div>

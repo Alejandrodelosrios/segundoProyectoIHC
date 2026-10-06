@@ -19,7 +19,7 @@ export class ErrorApi extends Error {
   }
 }
 
-type Opciones = { metodo?: "GET" | "POST" | "PUT"|"DELETE"; cuerpo?: unknown };
+type Opciones = { metodo?: "GET" | "POST" | "PUT"|"DELETE"|"PATCH"; cuerpo?: unknown };
 
 async function pedir<T>(ruta: string, opciones: Opciones = {}): Promise<T> {
   let respuesta: Response;
@@ -91,9 +91,10 @@ export type Mascota ={
   especie: string;
   cuidado: string;
   fechaCuidado: string;
+  estado:string;
 };
 
-export type DatosMascota = Omit<Mascota, "id">;
+export type DatosMascota = Omit<Mascota, "id"|"estado">;
 
 type MascotaRespuesta ={
   id:number;
@@ -102,11 +103,12 @@ type MascotaRespuesta ={
   especie: string;
   cuidado: string;
   fecha_cuidado: string;
+  estado: string;
   usuario_id: number;
 };
 
 function convertirMascota(datos: MascotaRespuesta): Mascota {
- return {id:datos.id, nombre: datos.nombre, sexo: datos.sexo, especie: datos.especie,cuidado: datos.cuidado, fechaCuidado: datos.fecha_cuidado};  
+ return {id:datos.id, nombre: datos.nombre, sexo: datos.sexo, especie: datos.especie,cuidado: datos.cuidado, fechaCuidado: datos.fecha_cuidado, estado:datos.estado};  
 }
 
 function cuerpoMascota(datos: DatosMascota) {
@@ -142,4 +144,11 @@ export async function eliminarMascota(id: number) {
   return pedir<null>(`/mascotas/${id}`,{
    metodo: "DELETE"
   });
+}
+
+export async function marcarRealizado(id: number){
+  const respuesta = await pedir<MascotaRespuesta>(`/mascotas/${id}/realizar`,{
+   metodo: "PATCH",
+  });
+  return convertirMascota(respuesta);
 }
