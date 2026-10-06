@@ -36,3 +36,9 @@ def actualizar(session:Session,mascota:Mascota,nombre:str,sexo:str,especie:str,c
 def eliminar(session:Session,mascota:Mascota)->None:
     session.delete(mascota)
     session.commit()
+
+def cambiar_estado(session:Session,mascota:Mascota,estado:str)->Mascota:
+    mascota.estado = estado
+    session.commit()
+    session.refresh(mascota)
+    return mascota

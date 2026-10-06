@@ -32,3 +32,7 @@ def actualizar(mascota_id: int, datos: MascotaActualizada, sesion:Session=Depend
 @router.delete("/{mascota_id}", status_code=204)
 def eliminar(mascota_id: int, sesion:Session=Depends(obtener_sesion), usuario:Usuario=Depends(obtener_usuario_actual)):
     mascota_servicio.eliminar_mascota(sesion,mascota_id,usuario.id)
+
+@router.patch("/{mascota_id}/realizar", response_model=MascotaSalida)
+def realizar(mascota_id:int,sesion:Session=Depends(obtener_sesion), usuario:Usuario=Depends(obtener_usuario_actual)):
+    return mascota_servicio.marcar_realizado(sesion,mascota_id,usuario.id)

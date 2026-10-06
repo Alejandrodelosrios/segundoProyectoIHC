@@ -25,4 +25,5 @@ class MascotaSalida(BaseModel):
     especie: str
     cuidado: str
     fecha_cuidado:date
+    estado:str
     usuario_id:int
