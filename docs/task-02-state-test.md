@@ -55,14 +55,25 @@ Las pruebas están en `backend/tests/` y comprueban la regla de cambio de estado
 | 2 | `test_marcar_realizado_cambia_el_estado` | Al ejecutar la acción, el estado pasa de `pendiente` a `realizado`. |
 | 3 | `test_marcar_dos_veces_se_rechaza` | Marcar como realizado una mascota que ya lo está lanza `ErrorDeNegocio` (estado 400). |
 | 4 | `test_demas_datos_se_conservan` | Después de la acción, el nombre, sexo, especie, cuidado, fecha y dueño siguen iguales. Solo cambia el estado. |
+| 5 | `test_editar_no_cambia_el_estado` | Después de editar, el nombre, sexo, especie, cuidado, fecha y dueño siguen iguales. no cambia el estado. |
 
 ### Resultado de la ejecución
-tests/test_estado_mascota.py::test_estado_inicial_es_pendiente PASSED                       [ 25%]
-tests/test_estado_mascota.py::test_marcar_realizado_cambia_el_estado PASSED                 [ 50%]
-tests/test_estado_mascota.py::test_marcar_dos_veces_se_rechaza PASSED                       [ 75%]
-tests/test_estado_mascota.py::test_demas_datos_se_conservan PASSED                          [100%]
+====================================== test session starts =======================================
+platform win32 -- Python 3.13.3, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\EQUIPO\Desktop\ihc\segundoProyecto\backend\.venv\Scripts\python.exe
+cachedir: .pytest_cache
+rootdir: C:\Users\EQUIPO\Desktop\ihc\segundoProyecto\backend
+configfile: pytest.ini
+testpaths: tests
+plugins: anyio-4.15.1
+collected 5 items                                                                                 
 
-======================================= 4 passed in 3.08s ========================================
+tests/test_estado_mascota.py::test_estado_inicial_es_pendiente PASSED                       [ 20%]
+tests/test_estado_mascota.py::test_marcar_realizado_cambia_el_estado PASSED                 [ 40%]
+tests/test_estado_mascota.py::test_marcar_dos_veces_se_rechaza PASSED                       [ 60%]
+tests/test_estado_mascota.py::test_demas_datos_se_conservan PASSED                          [ 80%]
+tests/test_estado_mascota.py::test_editar_no_cambia_el_estado PASSED                        [100%]
+
+======================================= 5 passed in 0.64s ========================================
 
 ## 3. Cómo ejecutar las pruebas
 
