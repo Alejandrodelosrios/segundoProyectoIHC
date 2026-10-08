@@ -7,6 +7,7 @@ import Boton from "./Boton";
 import FormularioMascota from "./FormularioMascota";
 import MensajeError from "./MensajeError";
 import TarjetaMascota from "./TarjetaMascota";
+import MensajeExito from "./MensajeExito";
 
 export default function PanelMascotas() {
   const [mascotas, setMascotas] = useState<Mascota[]>([]);
@@ -14,6 +15,7 @@ export default function PanelMascotas() {
   const [error, setError] = useState("");
   const [formularioAbierto, setFormularioAbierto] = useState(false);
   const [mascotaEditar, setMascotaEditar] = useState<Mascota | null>(null);
+  const [exito, setExito] = useState("");
 
   async function cargar() {
     try {
@@ -27,8 +29,15 @@ export default function PanelMascotas() {
 
   // Se ejecuta una sola vez, al aparecer la pantalla
   useEffect(() => {
-    cargar();
-  }, []);
+  cargar();
+}, []);
+
+
+  useEffect(() => {
+    if(!exito) return;
+    const temporizador = setTimeout(() => setExito(""), 4000);
+    return () => clearTimeout(temporizador);
+  },[exito]);
 
   function abrirNueva() {
     setMascotaEditar(null); // null = no editamos ninguna, es nueva
@@ -43,9 +52,11 @@ export default function PanelMascotas() {
   async function borrar(mascota: Mascota) {
     if (!confirm(`¿Eliminar a ${mascota.nombre}?`)) return;
     setError("");
+    setExito("");
     try {
       await eliminarMascota(mascota.id);
       await cargar();
+      setExito(`${mascota.nombre} fue eliminada con éxito`);
     } catch (e) {
       setError(e instanceof ErrorApi ? e.message : "Ocurrió un error inesperado");
     }
@@ -53,16 +64,20 @@ export default function PanelMascotas() {
 
   async function realizar(mascota: Mascota) {
   setError("");
+  setExito("");
   try {
     await marcarRealizado(mascota.id);
     await cargar();
+     setExito(`El cuidado de ${mascota.nombre} se marcó como realizado`);
   } catch (e) {
     setError(e instanceof ErrorApi ? e.message : "Ocurrió un error inesperado");
   }
 }
 
-  function alGuardar() {
+  function alGuardar(mensaje:string) {
     setFormularioAbierto(false);
+    setError("");
+    setExito(mensaje);
     cargar();
   }
 
@@ -74,6 +89,7 @@ export default function PanelMascotas() {
       </div>
 
       <MensajeError mensaje={error} />
+      <MensajeExito mensaje={exito} />
 
       {formularioAbierto && (
         <FormularioMascota

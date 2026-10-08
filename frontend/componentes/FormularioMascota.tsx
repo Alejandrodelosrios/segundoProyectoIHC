@@ -15,7 +15,7 @@ import MensajeError from "./MensajeError";
 
 type Props = {
   mascotaEditar: Mascota | null;
-  alGuardar: () => void;
+  alGuardar: (mensaje:string) => void;
   alCancelar: () => void;
 };
 
@@ -66,7 +66,7 @@ export default function FormularioMascota({ mascotaEditar, alGuardar, alCancelar
       } else {
         await crearMascota(datos);
       }
-      alGuardar(); // le avisa al Panel que ya terminó
+      alGuardar(mascotaEditar ? "Mascota actualizada con éxito" : "Mascota creada con éxito"); // le avisa al Panel que ya terminó
     } catch (error) {
       setErrorGeneral(error instanceof ErrorApi ? error.message : "Ocurrió un error inesperado");
       setCargando(false);
