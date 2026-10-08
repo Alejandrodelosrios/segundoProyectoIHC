@@ -1,4 +1,10 @@
 import os
+
+os.environ["URL_BASE_DATOS"] ="sqlite://"
+os.environ["SECRETO_JWT"] = "secreto-de-prueba"
+os.environ["MINUTOS_SESION"] = "60"
+os.environ["MINUTOS_CODIGO_RECUPERACION"] = "15"
+
 import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -6,14 +12,10 @@ from app import models
 from app.base_datos import Base
 from app.models.usuario import Usuario
 
-os.environ["URL_BASE_DATO"] ="sqlite://"
-os.environ["SECRETO_JWT"] = "secreto-de-prueba"
-os.environ["MINUTOS_SESION"] = "60"
-os.environ["MINUTOS_CODIGO_RECUPERACION"] = "15"
 
 @pytest.fixture
 def session():
-    motor = create_engine(os.environ["URL_BASE_DATO"])
+    motor = create_engine(os.environ["URL_BASE_DATOS"])
     Base.metadata.create_all(motor)
     sesion = sessionmaker(bind=motor)()
     yield sesion
