@@ -5,6 +5,7 @@ type Props = {
   alEditar: (mascota: Mascota) => void;
   alEliminar: (mascota: Mascota) => void;
   alRealizar: (mascota:Mascota) => void;
+  alReprogramar: (mascota:Mascota) => void;
 };
 
 function formatearFecha(fecha: string): string {
@@ -16,7 +17,7 @@ function formatearFecha(fecha: string): string {
   });
 }
 
-export default function TarjetaMascota({ mascota, alEditar, alEliminar, alRealizar }: Props) {
+export default function TarjetaMascota({ mascota, alEditar, alEliminar, alRealizar, alReprogramar }: Props) {
     const realizado = mascota.estado === "realizado";
   return (
  <article className="flex flex-col gap-2 rounded-xl border border-arena bg-white p-4 text-left text-neutral-900 shadow-sm">
@@ -33,15 +34,24 @@ export default function TarjetaMascota({ mascota, alEditar, alEliminar, alRealiz
       </p>
       {realizado && (
         <p className="text-sm text-grisazulado">
-          Este cuidado ya fue realizado, por eso no se puede marcar de nuevo.
+          Este cuidado ya fue realizado, por eso no se puede reprogramar ni editar.
         </p>
       )}
 
       <div className="mt-2 flex flex-wrap gap-2">
         <button
+         type="button"
+         onClick={()=> alReprogramar(mascota)}
+         disabled={realizado}
+         className="rounded-lg border border-arena px-4 py-2 font-semibold text-tinta hover:bg-menta-claro disabled:cursor-not-allowed disabled:opacity-50" 
+        >
+          Reprogramar
+        </button>
+        <button
           type="button"
           onClick={() => alEditar(mascota)}
-          className="rounded-lg border border-arena px-4 py-2 font-semibold text-tinta hover:bg-menta-claro"
+           disabled={realizado}
+          className="rounded-lg border border-arena px-4 py-2 font-semibold text-tinta hover:bg-menta-claro disabled:cursor-not-allowed disabled:opacity-50"
         >
           Editar
         </button>

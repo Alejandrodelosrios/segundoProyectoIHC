@@ -101,7 +101,7 @@ export default function FormularioMascota({ mascotaEditar, alGuardar, alCancelar
 
       <CampoTexto id="especie" etiqueta="Especie" valor={especie} alCambiar={setEspecie} error={errores.especie} ayuda="Por ejemplo: perro, gato" />
       <CampoTexto id="cuidado" etiqueta="Cuidado" valor={cuidado} alCambiar={setCuidado} error={errores.cuidado} ayuda="Por ejemplo: vacuna" />
-      <CampoTexto id="fecha" etiqueta="Fecha del cuidado" tipo="date" valor={fecha} alCambiar={setFecha} error={errores.fecha} />
+      <CampoTexto id="fecha" etiqueta="Fecha del cuidado" tipo="date" valor={fecha} alCambiar={setFecha} error={errores.fecha} deshabilitado={Boolean(mascotaEditar)} ayuda={mascotaEditar ? "Para cambiar la fecha usa el boton de reprogramar": undefined}/>
 
       <div className="flex gap-2">
         <Boton

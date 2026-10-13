@@ -11,6 +11,7 @@ type Props = {
   error?: string;
   ayuda?: string;
   autoComplete?: string;
+  deshabilitado?: boolean;
 };
 
 export default function CampoTexto({
@@ -22,6 +23,7 @@ export default function CampoTexto({
   error,
   ayuda,
   autoComplete,
+  deshabilitado = false,
 }: Props) {
   const [visible, setVisible] = useState(false);
   const esContrasena = tipo === "password";
@@ -39,9 +41,10 @@ export default function CampoTexto({
           value={valor}
           onChange={(evento) => alCambiar(evento.target.value)}
           autoComplete={autoComplete}
+          disabled={deshabilitado}
           aria-invalid={error ? true : undefined}
           aria-describedby={error ? `${id}-error` : undefined}
-          className={`w-full rounded-lg border bg-white p-3 text-neutral-900 ${
+          className={`w-full rounded-lg border bg-white p-3 text-neutral-900 disabled:cursor-not-allowed disabled:bg-neutral-100 disabled:text-neutral-500 ${
             error ? "border-red-500" : "border-arena"
           } ${esContrasena ? "pr-20" : ""}`}
         />
