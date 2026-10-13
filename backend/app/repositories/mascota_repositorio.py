@@ -47,3 +47,18 @@ def actualizar_fecha_cuidado(session:Session,mascota:Mascota,nueva_fecha:date)->
     session.commit()
     session.refresh(mascota)
     return mascota
+
+def filtrar_por_usuario(session:Session,usuario_id:int,nombre:str|None=None,estado:str|None=None,tipo_cuidado:str|None=None,fecha_desde:date|None=None,fecha_hasta:date|None=None)->list[Mascota]:
+    consulta = select(Mascota).where(Mascota.usuario_id==usuario_id)
+    if nombre and nombre.strip():
+        consulta = consulta.where(Mascota.nombre.icontains(nombre.strip(),autoescape=True))
+    if estado:
+        consulta = consulta.where(Mascota.estado==estado)
+    if tipo_cuidado and tipo_cuidado.strip():
+        consulta = consulta.where(Mascota.cuidado.icontains(tipo_cuidado.strip(),autoescape=True))
+    if fecha_desde:
+        consulta = consulta.where(Mascota.fecha_cuidado >= fecha_desde)
+    if fecha_hasta:
+        consulta = consulta.where(Mascota.fecha_cuidado <= fecha_hasta)
+    consulta = consulta.order_by(Mascota.fecha_cuidado,Mascota.estado,Mascota.id)
+    return session.scalars(consulta).all()
