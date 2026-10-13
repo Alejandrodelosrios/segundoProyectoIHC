@@ -4,6 +4,7 @@ from app.models.mascota import Mascota
 from app.schemas.mascota import MascotaEntrada,MascotaActualizada
 from app.repositories import mascota_repositorio as repo
 from app.repositories import usuario_repositorio as repo_usuario
+from datetime import date
 
 def obtener_propia(session:Session, mascota_id:int, usuario_id:int) -> Mascota:
     return _obtener_propia(session,mascota_id,usuario_id)
@@ -29,7 +30,9 @@ def listar_mascotas(session:Session, usuario_id: int):
 
 def actualizar_mascota(session:Session, mascota_id:int, datos: MascotaActualizada, usuario_id: int):
     mascota = _obtener_propia(session,mascota_id,usuario_id)
-    mascota = repo.actualizar(session,mascota,datos.nombre,datos.sexo,datos.especie,datos.cuidado,datos.fecha_cuidado)
+    if mascota.estado == "realizado":
+        raise ErrorDeNegocio("Este cuidado ya fue realizado, por eso no se puede editar",400)
+    mascota = repo.actualizar(session,mascota,datos.nombre,datos.sexo,datos.especie,datos.cuidado)
     return mascota
 
 def eliminar_mascota(session:Session, mascota_id:int, usuario_id: int):
@@ -41,4 +44,13 @@ def marcar_realizado(session:Session,mascota_id:int, usuario_id:int):
     if mascota.estado == "realizado":
         raise ErrorDeNegocio("La mascota ya esta marcada como realizado",400)
     mascota = repo.cambiar_estado(session,mascota,"realizado")
+    return mascota
+
+def reprogramar_cuidado(session:Session,mascota_id:int,usuario_id:int,nueva_fecha:date):
+    mascota = _obtener_propia(session,mascota_id,usuario_id)
+    if(mascota.estado == "realizado"):
+        raise ErrorDeNegocio("Este cuidado ya fue realizado, por eso no se puede reprogramar",400)
+    if nueva_fecha < date.today():
+        raise ErrorDeNegocio("La nueva fecha no puede ser anterior a hoy", 400)
+    mascota = repo.actualizar_fecha_cuidado(session,mascota,nueva_fecha)
     return mascota

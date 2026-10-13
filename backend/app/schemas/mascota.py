@@ -14,7 +14,9 @@ class MascotaActualizada(BaseModel):
     sexo: str = Field(max_length=7)
     especie: str = Field(min_length=1,max_length=50)
     cuidado: str = Field(max_length=100)
-    fecha_cuidado: date
+
+class MascotaReprogramar(BaseModel):
+    fecha_cuidado: date  
 
 class MascotaSalida(BaseModel):
     model_config = ConfigDict(from_attributes=True)
