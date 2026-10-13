@@ -36,3 +36,19 @@ export function validarSexo(sexo: string):string|undefined{
 export function validarFecha(fecha: string):string|undefined{
     if(fecha.trim().length < 1) return "Escribe la fecha de cuidado de tu mascota";
 }
+
+export function fechaHoy(): string {
+    const ahora = new Date();
+    const mes = String(ahora.getMonth()+1).padStart(2,"0");
+    const dia = String(ahora.getDate()).padStart(2,"0");
+    return `${ahora.getFullYear()}-${mes}-${dia}`;
+}
+
+export function validarNuevaFecha(fecha:string): string | undefined{
+    if(fecha.trim().length < 1){
+        return "Elige la nueva fecha";
+    }
+    if(fecha < fechaHoy()){
+        return "La nueva fecha no puede ser anterior a hoy";
+    }
+}

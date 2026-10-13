@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 
-import { ErrorApi, eliminarMascota, listarMascotas,marcarRealizado, type Mascota } from "@/lib/api";
+import { ErrorApi, eliminarMascota, listarMascotas,marcarRealizado, reprogramarCuidado, type Mascota } from "@/lib/api";
+import { fechaHoy, validarNuevaFecha} from "@/lib/validaciones";
 import Boton from "./Boton";
 import FormularioMascota from "./FormularioMascota";
 import MensajeError from "./MensajeError";
@@ -16,6 +17,10 @@ export default function PanelMascotas() {
   const [formularioAbierto, setFormularioAbierto] = useState(false);
   const [mascotaEditar, setMascotaEditar] = useState<Mascota | null>(null);
   const [exito, setExito] = useState("");
+  const [mascotaReprogramar, setMascotaReprogramar] = useState<Mascota | null>(null);
+  const [nuevaFecha, setNuevaFecha] = useState("");
+  const [guardandoReprogramacion, setGuardandoReprogramacion] = useState(false);
+  const [ errorReprogramacion, setErrorReprogramacion] = useState("")
 
   async function cargar() {
     try {
@@ -40,13 +45,30 @@ export default function PanelMascotas() {
   },[exito]);
 
   function abrirNueva() {
-    setMascotaEditar(null); // null = no editamos ninguna, es nueva
+    setMascotaEditar(null);
+    setMascotaReprogramar(null); 
     setFormularioAbierto(true);
   }
 
   function abrirEdicion(mascota: Mascota) {
     setMascotaEditar(mascota);
+    setMascotaReprogramar(null);
     setFormularioAbierto(true);
+  }
+
+  function abrirReprogramacion(mascota: Mascota){
+    setFormularioAbierto(false);
+    setMascotaReprogramar(mascota);
+    setNuevaFecha(mascota.fechaCuidado);
+    setErrorReprogramacion("");
+    setError("");
+    setExito("");
+  }
+
+  function cerrarReprogramacion(){
+    setMascotaReprogramar(null);
+    setNuevaFecha("");
+    setErrorReprogramacion("");
   }
 
   async function borrar(mascota: Mascota) {
@@ -81,6 +103,31 @@ export default function PanelMascotas() {
     cargar();
   }
 
+  async function guardarReprogramacion(evento: FormEvent<HTMLFormElement>){
+    evento.preventDefault();
+    if(!mascotaReprogramar) return;
+
+    const mensajeFecha = validarNuevaFecha(nuevaFecha);
+    if(mensajeFecha){
+      setErrorReprogramacion(mensajeFecha);
+      return;
+    }
+
+    setErrorReprogramacion("");
+    setGuardandoReprogramacion(true);
+    try{
+      await reprogramarCuidado(mascotaReprogramar.id,nuevaFecha);
+      const nombre = mascotaReprogramar.nombre;
+      cerrarReprogramacion();
+      await cargar();
+      setExito(`El cuidado de ${nombre} se reprogramó con éxito`);
+    }catch(e){
+      setErrorReprogramacion(e instanceof ErrorApi ? e.message : "Ocurrió un error inesperado"); 
+    }finally{
+      setGuardandoReprogramacion(false);
+    }
+  }
+
   return (
     <section className="flex flex-col gap-4">
       <div className="flex items-center justify-between gap-4">
@@ -90,6 +137,60 @@ export default function PanelMascotas() {
 
       <MensajeError mensaje={error} />
       <MensajeExito mensaje={exito} />
+
+      {mascotaReprogramar && (
+        <form
+          onSubmit={guardarReprogramacion}
+          noValidate
+          className="flex flex-col gap-3 rounded-xl border border-arena bg-white p-4"
+          >
+           <h3 className="text-xl font-bold">
+             Reprogramar cuidado de {mascotaReprogramar.nombre}
+            </h3>  
+
+            <p className="text-sm text-grisazulado">
+              Cuidado: {mascotaReprogramar.cuidado}
+            </p>
+
+            <p className="text-sm text-grisazulado">
+      Fecha actual: {mascotaReprogramar.fechaCuidado}
+    </p>
+
+    <MensajeError mensaje={errorReprogramacion} />
+
+    <input
+      id="nuevaFecha"
+      type="date"
+      value={nuevaFecha}
+      min={fechaHoy()}
+      onChange={(e) => setNuevaFecha(e.target.value)}
+      aria-invalid={errorReprogramacion ? true : undefined}
+      className="rounded-lg border border-arena px-3 py-2"
+    />
+
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="submit"
+          disabled={guardandoReprogramacion}
+          className="rounded-lg bg-menta-oscuro px-4 py-2 font-semibold text-white disabled:opacity-50"
+        >
+          {guardandoReprogramacion ? "Guardando..." : "Guardar fecha"}
+        </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setMascotaReprogramar(null);
+              setNuevaFecha("");
+              }}
+              disabled={guardandoReprogramacion}
+              className="rounded-lg border border-arena px-4 py-2 font-semibold"
+              >
+                Cancelar
+              </button>
+             </div>
+        </form>            
+      )}
 
       {formularioAbierto && (
         <FormularioMascota
@@ -113,6 +214,7 @@ export default function PanelMascotas() {
               alEditar={abrirEdicion}
               alEliminar={borrar}
               alRealizar={realizar}
+              alReprogramar={abrirReprogramacion}
             />
           ))}
         </div>
