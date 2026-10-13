@@ -23,12 +23,11 @@ def crear(session:Session, nombre:str,sexo:str,especie:str,cuidado:str,fecha_cui
     session.refresh(mascota)
     return mascota
 
-def actualizar(session:Session,mascota:Mascota,nombre:str,sexo:str,especie:str,cuidado:str,fecha_cuidado:date)->Mascota:
+def actualizar(session:Session,mascota:Mascota,nombre:str,sexo:str,especie:str,cuidado:str)->Mascota:
     mascota.nombre = nombre
     mascota.sexo = sexo
     mascota.especie = especie
     mascota.cuidado = cuidado
-    mascota.fecha_cuidado = fecha_cuidado
     session.commit()
     session.refresh(mascota)
     return mascota
@@ -39,6 +38,12 @@ def eliminar(session:Session,mascota:Mascota)->None:
 
 def cambiar_estado(session:Session,mascota:Mascota,estado:str)->Mascota:
     mascota.estado = estado
+    session.commit()
+    session.refresh(mascota)
+    return mascota
+
+def actualizar_fecha_cuidado(session:Session,mascota:Mascota,nueva_fecha:date)->Mascota:
+    mascota.fecha_cuidado = nueva_fecha
     session.commit()
     session.refresh(mascota)
     return mascota
