@@ -9,6 +9,8 @@ import pytest
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from app import models
+from datetime import date, timedelta
+from app.repositories import mascota_repositorio as repo
 from app.base_datos import Base
 from app.models.usuario import Usuario
 
@@ -29,4 +31,18 @@ def usuario(session):
     session.refresh(nuevo_usuario)
     return nuevo_usuario
 
-   
+@pytest.fixture
+def otro_usuario(session):
+    otro = Usuario(nombre_completo="Juan Prueba", correo="juan@correo.com", contrasena_hash="x")
+    session.add(otro)
+    session.commit()
+    session.refresh(otro)
+    return otro
+
+@pytest.fixture
+def crear_mascota(session, usuario):
+    def _crear(nombre="Luna", sexo="Hembra", especie="perro",
+               cuidado="vacuna", fecha=None):
+        fecha = fecha or date.today() + timedelta(days=3)
+        return repo.crear(session, nombre, sexo, especie, cuidado, fecha, usuario.id)
+    return _crear   

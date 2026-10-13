@@ -42,8 +42,8 @@ def test_editar_no_cambia_el_estado(session: repo.Session,usuario: Usuario):
         sexo="Hembra",
         especie="perro",
         cuidado="vacuna",
-        fecha_cuidado=date(2026,10,22),
         )
-    mascota_editada= servicio.actualizar_mascota(session,mascota.id,datos,usuario.id)
-    assert mascota_editada.nombre == "Perla"
-    assert mascota_editada.estado == "realizado"   
+    with pytest.raises(ErrorDeNegocio) as error:
+        mascota_editada= servicio.actualizar_mascota(session,mascota.id,datos,usuario.id)
+    assert error.value.estado == 400
+    assert error.value.mensaje == "Este cuidado ya fue realizado, por eso no se puede editar"
