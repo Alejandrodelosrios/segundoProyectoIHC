@@ -170,3 +170,33 @@ export async function reprogramarCuidado(id:number,nuevaFecha:string){
   });
   return convertirMascota(respuesta);
 }
+
+export type FiltroCuidado = {
+  nombre?:string;
+  estado?: "pendiente"|"realizado";
+  tipoCuidado?:string;
+  fechaDesde?:string;
+  fechaHasta?:string;
+};
+
+export async function filtrarMascotas(filtros:FiltroCuidado={}){
+  const parametros = new URLSearchParams();
+  if(filtros.nombre?.trim()){
+    parametros.set("nombre",filtros.nombre.trim());
+  }
+  if(filtros.estado){
+    parametros.set("estado", filtros.estado);
+  }
+  if(filtros.tipoCuidado?.trim()){ 
+    parametros.set("tipo_cuidado", filtros.tipoCuidado.trim());
+  }
+  if(filtros.fechaDesde){
+    parametros.set("fecha_desde", filtros.fechaDesde);
+  }
+  if(filtros.fechaHasta){
+    parametros.set("fecha_hasta", filtros.fechaHasta);
+  }
+  const consulta = parametros.toString();
+  const datos = await pedir<MascotaRespuesta[]>(`/mascotas/filtrar${consulta ? `?${consulta}` : ""}`);
+  return datos.map(convertirMascota);
+}
