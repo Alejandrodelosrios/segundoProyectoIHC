@@ -121,6 +121,16 @@ function cuerpoMascota(datos: DatosMascota) {
   };
 }
 
+function cuerpoMascotaActualizar(datos: DatosMascota) {
+  return {
+    nombre: datos.nombre,
+    sexo: datos.sexo,
+    especie: datos.especie,
+    cuidado: datos.cuidado,
+  };
+}
+
+
 export async function listarMascotas() {
   const datos = await pedir<MascotaRespuesta[]>("/mascotas");
   return datos.map(convertirMascota);
@@ -135,8 +145,8 @@ export async function crearMascota(datos: DatosMascota) {
 
 export async function actualizarMascota(id: number, datos: DatosMascota) {
  return pedir<MascotaRespuesta>(`/mascotas/${id}`,{
-  metodo: "PUT",
-  cuerpo: cuerpoMascota(datos)
+  metodo: "PUT", 
+  cuerpo: cuerpoMascotaActualizar(datos)
  });
 }
 
@@ -149,6 +159,14 @@ export async function eliminarMascota(id: number) {
 export async function marcarRealizado(id: number){
   const respuesta = await pedir<MascotaRespuesta>(`/mascotas/${id}/realizar`,{
    metodo: "PATCH",
+  });
+  return convertirMascota(respuesta);
+}
+
+export async function reprogramarCuidado(id:number,nuevaFecha:string){
+  const respuesta = await pedir<MascotaRespuesta>(`/mascotas/${id}/reprogramar`,{
+    metodo: "PATCH",
+    cuerpo: {fecha_cuidado: nuevaFecha} 
   });
   return convertirMascota(respuesta);
 }
