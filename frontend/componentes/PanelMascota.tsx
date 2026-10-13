@@ -1,10 +1,25 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 
-import { ErrorApi, eliminarMascota, listarMascotas,marcarRealizado, reprogramarCuidado, type Mascota } from "@/lib/api";
-import { fechaHoy, validarNuevaFecha} from "@/lib/validaciones";
+import {
+  ErrorApi,
+  eliminarMascota,
+  filtrarMascotas,
+  marcarRealizado,
+  reprogramarCuidado,
+  type Mascota,
+} from "@/lib/api";
+import {
+  aParametros,
+  FILTROS_VACIOS,
+  filtrosActivos,
+  validarRango,
+  type FiltrosPantalla,
+} from "@/lib/filtros";
+import { fechaHoy, validarNuevaFecha } from "@/lib/validaciones";
 import Boton from "./Boton";
+import FiltrosMascotas from "./FiltrosMascotas";
 import FormularioMascota from "./FormularioMascota";
 import MensajeError from "./MensajeError";
 import TarjetaMascota from "./TarjetaMascota";
@@ -20,22 +35,42 @@ export default function PanelMascotas() {
   const [mascotaReprogramar, setMascotaReprogramar] = useState<Mascota | null>(null);
   const [nuevaFecha, setNuevaFecha] = useState("");
   const [guardandoReprogramacion, setGuardandoReprogramacion] = useState(false);
-  const [ errorReprogramacion, setErrorReprogramacion] = useState("")
+  const [errorReprogramacion, setErrorReprogramacion] = useState("");
+  const [filtros, setFiltros] = useState<FiltrosPantalla>(FILTROS_VACIOS);
+  const filtrosRef = useRef(filtros);
+  const peticionActual = useRef(0);
+  const primeraCarga = useRef(true);
 
+  // Carga la lista desde el servidor usando los filtros vigentes
   async function cargar() {
+    const vigentes = filtrosRef.current;
+    if (validarRango(vigentes)) {
+      setCargando(false);
+      return;
+    }
+    const numero = ++peticionActual.current;
     try {
-      setMascotas(await listarMascotas());
+      const datos = await filtrarMascotas(aParametros(vigentes));
+      if (numero !== peticionActual.current) return; // llegó una respuesta más nueva
+      setMascotas(datos);
+      setError("");
     } catch (e) {
+      if (numero !== peticionActual.current) return;
       setError(e instanceof ErrorApi ? e.message : "Ocurrió un error inesperado");
     } finally {
       setCargando(false);
     }
   }
 
-  // Se ejecuta una sola vez, al aparecer la pantalla
+  // Al aparecer la pantalla y cada vez que cambian los filtros.
+  // Espera un momento para no consultar con cada letra que se escribe.
   useEffect(() => {
-  cargar();
-}, []);
+    filtrosRef.current = filtros;
+    const retraso = primeraCarga.current ? 0 : 300;
+    primeraCarga.current = false;
+    const temporizador = setTimeout(cargar, retraso);
+    return () => clearTimeout(temporizador);
+  }, [filtros]);
 
 
   useEffect(() => {
@@ -135,6 +170,8 @@ export default function PanelMascotas() {
         <Boton texto="Agregar mascota" alClic={abrirNueva} />
       </div>
 
+      <FiltrosMascotas filtros={filtros} alCambiar={setFiltros} errorRango={validarRango(filtros)} />
+
       <MensajeError mensaje={error} />
       <MensajeExito mensaje={exito} />
 
@@ -158,6 +195,10 @@ export default function PanelMascotas() {
 
     <MensajeError mensaje={errorReprogramacion} />
 
+    <label htmlFor="nuevaFecha" className="font-semibold">
+      Nueva fecha
+    </label>
+
     <input
       id="nuevaFecha"
       type="date"
@@ -179,10 +220,7 @@ export default function PanelMascotas() {
 
           <button
             type="button"
-            onClick={() => {
-              setMascotaReprogramar(null);
-              setNuevaFecha("");
-              }}
+            onClick={cerrarReprogramacion}
               disabled={guardandoReprogramacion}
               className="rounded-lg border border-arena px-4 py-2 font-semibold"
               >
@@ -204,7 +242,23 @@ export default function PanelMascotas() {
       {cargando ? (
         <p>Cargando...</p>
       ) : mascotas.length === 0 ? (
-        <p>Aún no tienes mascotas. ¡Agrega la primera!</p>
+        filtrosActivos(filtros).length > 0 ? (
+          <div className="flex flex-col gap-2 rounded-xl border border-arena bg-white p-4 text-neutral-900">
+            <p className="font-semibold">Ningún cuidado coincide con los filtros.</p>
+            <p className="text-sm">
+              Prueba con otros filtros o quítalos para ver todos tus cuidados.
+            </p>
+            <div>
+              <Boton
+                variante="secundario"
+                texto="Limpiar filtros"
+                alClic={() => setFiltros(FILTROS_VACIOS)}
+              />
+            </div>
+          </div>
+        ) : (
+          <p>Aún no tienes mascotas. ¡Agrega la primera!</p>
+        )
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
           {mascotas.map((mascota) => (
