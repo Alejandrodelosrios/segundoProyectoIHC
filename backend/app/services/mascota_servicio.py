@@ -54,3 +54,11 @@ def reprogramar_cuidado(session:Session,mascota_id:int,usuario_id:int,nueva_fech
         raise ErrorDeNegocio("La nueva fecha no puede ser anterior a hoy", 400)
     mascota = repo.actualizar_fecha_cuidado(session,mascota,nueva_fecha)
     return mascota
+
+def filtrar_mascotas(session:Session,usuario_id:int,nombre:str|None=None,estado:str|None=None,tipo_cuidado:str|None=None,fecha_desde:date|None=None,fecha_hasta:date|None=None):
+    usuario = repo_usuario.buscar_por_id(session,usuario_id)
+    if usuario is None:
+        raise ErrorDeNegocio("Error no se encontro el usuario",404)
+    if fecha_desde and fecha_hasta and fecha_desde > fecha_hasta:
+        raise ErrorDeNegocio("La fecha inicial no puede ser posterior a la fecha final",400)
+    return repo.filtrar_por_usuario(session,usuario_id,nombre,estado,tipo_cuidado,fecha_desde,fecha_hasta)
