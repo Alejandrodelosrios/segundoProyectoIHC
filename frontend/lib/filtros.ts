@@ -1,4 +1,5 @@
 import type { FiltroCuidado } from "@/lib/api";
+import { formatearFecha } from "@/componentes/TarjetaMascota";
 export type Periodo = "todos" | "proximos7" | "mes" | "rango";
 
 export type FiltrosPantalla = {
@@ -74,13 +75,13 @@ function textoFecha(filtros: FiltrosPantalla): string | undefined {
   }
   if(filtros.periodo === "rango") {
     if(filtros.desde && filtros.hasta){
-        return `Del ${filtros.desde} al ${filtros.hasta}`;
+        return `Del ${formatearFecha(filtros.desde)} al ${formatearFecha(filtros.hasta)}`;
     }
     if(filtros.desde){
-        return `Desde el ${filtros.desde}`;
+        return `Desde el ${formatearFecha(filtros.desde)}`;
     }
     if(filtros.hasta){
-        return `Hasta el ${filtros.hasta}`;
+        return `Hasta el ${formatearFecha(filtros.hasta)}`;
     }
   }
   return undefined;

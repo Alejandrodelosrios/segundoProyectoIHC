@@ -195,7 +195,7 @@ export default function PanelMascotas() {
             </p>
 
             <p className="text-sm text-grisazulado">
-      Fecha actual: {mascotaReprogramar.fechaCuidado}
+      Fecha actual: {formatearFecha(mascotaReprogramar.fechaCuidado)}
     </p>
 
     <MensajeError mensaje={errorReprogramacion} />
