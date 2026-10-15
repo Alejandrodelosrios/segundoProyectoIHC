@@ -8,7 +8,7 @@ type Props = {
   alReprogramar: (mascota:Mascota) => void;
 };
 
-function formatearFecha(fecha: string): string {
+export function formatearFecha(fecha: string): string {
   const [anio, mes, dia] = fecha.split("-").map(Number);
   return new Date(anio, mes - 1, dia).toLocaleDateString("es", {
     day: "numeric",

@@ -22,7 +22,7 @@ import Boton from "./Boton";
 import FiltrosMascotas from "./FiltrosMascotas";
 import FormularioMascota from "./FormularioMascota";
 import MensajeError from "./MensajeError";
-import TarjetaMascota from "./TarjetaMascota";
+import TarjetaMascota, {formatearFecha} from "./TarjetaMascota";
 import MensajeExito from "./MensajeExito";
 
 export default function PanelMascotas() {
@@ -107,13 +107,15 @@ export default function PanelMascotas() {
   }
 
   async function borrar(mascota: Mascota) {
-    if (!confirm(`¿Eliminar a ${mascota.nombre}?`)) return;
+    if (!confirm(`¿Eliminar el cuidado ${mascota.cuidado} de ${mascota.nombre} del ${formatearFecha(mascota.fechaCuidado)}?\n\nEsta acción no se puede deshacer.`)){
+      return;
+    }
     setError("");
     setExito("");
     try {
       await eliminarMascota(mascota.id);
       await cargar();
-      setExito(`${mascota.nombre} fue eliminada con éxito`);
+      setExito(`el cuidado ${mascota.cuidado} de ${mascota.nombre} se elimino con éxito`);
     } catch (e) {
       setError(e instanceof ErrorApi ? e.message : "Ocurrió un error inesperado");
     }
