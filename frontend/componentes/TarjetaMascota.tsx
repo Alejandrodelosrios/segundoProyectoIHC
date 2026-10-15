@@ -39,10 +39,11 @@ export default function TarjetaMascota({ mascota, alEditar, alEliminar, alRealiz
       )}
 
       <div className="mt-2 flex flex-wrap gap-2">
-        <button
+        {!realizado && (
+          <>
+          <button
          type="button"
          onClick={()=> alReprogramar(mascota)}
-         disabled={realizado}
          className="rounded-lg border border-arena px-4 py-2 font-semibold text-tinta hover:bg-menta-claro disabled:cursor-not-allowed disabled:opacity-50" 
         >
           Reprogramar
@@ -54,7 +55,9 @@ export default function TarjetaMascota({ mascota, alEditar, alEliminar, alRealiz
           className="rounded-lg border border-arena px-4 py-2 font-semibold text-tinta hover:bg-menta-claro disabled:cursor-not-allowed disabled:opacity-50"
         >
           Editar
-        </button>
+        </button> 
+        </> 
+        )}
         <button
           type="button"
           onClick={() => alEliminar(mascota)}
@@ -62,15 +65,16 @@ export default function TarjetaMascota({ mascota, alEditar, alEliminar, alRealiz
         >
           Eliminar
         </button>
-        <button
-          type="button"
-          onClick={() => alRealizar(mascota)}
-          disabled={realizado}
-          className="rounded-lg bg-menta-oscuro px-4 py-2 font-semibold text-white hover:bg-menta-profundo disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-menta-oscuro"
-        >
-          Marcar como realizado
-        </button>
-      </div>
+        {!realizado && (
+          <button
+            type="button"
+            onClick={() => alRealizar(mascota)}
+            className="rounded-lg bg-menta-oscuro px-4 py-2 font-semibold text-white hover:bg-menta-profundo"
+          >
+            Marcar como realizado
+          </button>
+        )}
+    </div>
     </article>
   );
 }
