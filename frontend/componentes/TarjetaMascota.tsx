@@ -1,4 +1,5 @@
 import type { Mascota } from "@/lib/api";
+import {fechaHoy} from "@/lib/validaciones";
 
 type Props = {
   mascota: Mascota;
@@ -19,8 +20,9 @@ export function formatearFecha(fecha: string): string {
 
 export default function TarjetaMascota({ mascota, alEditar, alEliminar, alRealizar, alReprogramar }: Props) {
     const realizado = mascota.estado === "realizado";
+    const atrasado = !realizado && mascota.fechaCuidado < fechaHoy();
   return (
- <article className="flex flex-col gap-2 rounded-xl border border-arena bg-white p-4 text-left text-neutral-900 shadow-sm">
+ <article className={`flex flex-col gap-2 rounded-xl border ${atrasado ? "border-red-300" : "border-arena"} bg-white p-4 text-left text-neutral-900 shadow-sm`}>
       <h3 className="text-xl font-bold">{mascota.nombre}</h3>
       <p className="text-sm text-grisazulado">
         {mascota.especie} · {mascota.sexo}
@@ -30,7 +32,10 @@ export default function TarjetaMascota({ mascota, alEditar, alEliminar, alRealiz
         {formatearFecha(mascota.fechaCuidado)}
       </p>
       <p>
-        <span className="font-semibold">Estado:</span> {realizado ? "Realizado" : "Pendiente"}
+        <span className="font-semibold">Estado:</span>{" "}
+        {realizado ? "Realizado" : atrasado ? (
+          <span className="font-semibold text-red-700">Atrasado: reprograma o márcalo como realizado</span>
+        ) : "Pendiente"}
       </p>
       {realizado && (
         <p className="text-sm text-grisazulado">
