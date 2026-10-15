@@ -3,7 +3,7 @@ export function esCorreoValido(correo:string): boolean{
 }
 
 export function validarNombre(nombre:string): string | undefined{
-    if(nombre.trim().length < 3) return "Escribe tu nombre completo (mínimo 2 letras)";    
+    if(nombre.trim().length < 2) return "Escribe tu nombre completo (mínimo 2 letras)";    
 }
 
 export function validarCorreo(correo:string): string | undefined{
