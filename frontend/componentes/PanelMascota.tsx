@@ -120,6 +120,9 @@ export default function PanelMascotas() {
   }
 
   async function realizar(mascota: Mascota) {
+  if(!confirm(`¿Marcar "${mascota.cuidado}" de ${mascota.nombre} como realizado?\n\nDespués ya no podrás editarlo ni reprogramarlo.`)){
+    return;
+  }
   setError("");
   setExito("");
   try {
