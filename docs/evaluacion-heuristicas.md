@@ -38,3 +38,12 @@ sub-issue #24 (pendiente)
 - **Capturas:** `evidencias/h1-antes.png`, `evidencias/h1-despues.png`
 - **Código:** `frontend/componentes/TarjetaMascota.tsx (variable atrasado)`
 - **Issue / commit:** #20
+
+## H2 — Mundo real
+
+- **Estado:** Corregida
+- **Pantalla o flujo:** `/inicio`, formulario de Reprogramar y chips del filtro por fechas
+- **Explicación:** antes, esos textos mostraban la fecha como "2026-10-14" mientras la tarjeta la mostraba como "14 de octubre de 2026". Ahora todos usan el mismo formato legible.
+- **Capturas:** `evidencias/h2-antes.png`, `evidencias/h2-despues.png`
+- **Código:** `frontend/componentes/PanelMascota.tsx, frontend/lib/filtros.ts (textoFecha), frontend/componentes/TarjetaMascota.tsx (formatearFecha)`
+- **Issue / commit:** #21
