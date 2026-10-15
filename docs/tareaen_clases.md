@@ -10,7 +10,7 @@ H5 - prevencion de errores
 3
 
 ## 2 captura ##
-![captura de cuidado expirado no se distingue]()
+![captura de cuidado expirado no se distingue](captura2.png)
 ## problema y consecuencia ##
 un cuidado pendiente y con la fecha pasada no se distingue con un cuidado con una fecha proxima haciendo dificil darse cuenta de que ya paso el cuidado y no reprogramo.
 
