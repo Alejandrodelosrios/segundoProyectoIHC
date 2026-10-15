@@ -29,3 +29,12 @@ sub-issue #24 (pendiente)
 - **Capturas:** `evidencias/h8-antes.png`, `evidencias/h8-despues.png`
 - **Código:** `frontend/componentes/TarjetaMascota.tsx`
 - **Issue / commit:** #25
+
+## H1 — Visibilidad
+
+- **Estado:** Corregida
+- **Pantalla o flujo:** `/inicio`, lista de  cuidados
+- **Explicación:** antes, un cuidado pendiente con fecha pasada se veía igual que uno con fecha futura (ambos decían "Pendiente"). Ahora el vencido muestra "Atrasado: reprograma o márcalo como realizado" en texto rojo y con borde rojo.
+- **Capturas:** `evidencias/h1-antes.png`, `evidencias/h1-despues.png`
+- **Código:** `frontend/componentes/TarjetaMascota.tsx (variable atrasado)`
+- **Issue / commit:** #20
