@@ -70,6 +70,18 @@ export default function FormularioRecuperar() {
     }
   }
 
+  function cambiarCorreo() {
+    setPaso("pedirCodigo");
+    setCodigoGenerado(null);
+    setCodigo("");
+    setContrasena("");
+    setConfirmacion("");
+    setErrorCodigo(undefined);
+    setErrorContrasena(undefined);
+    setErrorConfirmacion(undefined);
+    setErrorGeneral("");
+  }
+
   if (paso === "listo") {
     return (
       <div className="flex flex-col gap-4">
@@ -100,6 +112,16 @@ export default function FormularioRecuperar() {
             Si el correo existe, se generó un código de recuperación.
           </p>
         )}
+        <p className="text-sm">
+          Correo: <span className="font-semibold">{correo.trim()}</span>{" "}
+          <button
+            type="button"
+            onClick={cambiarCorreo}
+            className="font-semibold text-menta-oscuro underline"
+          >
+            Cambiar correo
+          </button>
+        </p>
         <MensajeError mensaje={errorGeneral} />
         <CampoTexto
           id="codigo"
@@ -129,6 +151,11 @@ export default function FormularioRecuperar() {
           autoComplete="new-password"
         />
         <Boton texto="Cambiar contraseña" textoCargando="Cambiando..." cargando={cargando} />
+        <p className="text-center text-sm">
+          <Link href="/ingresar" className="font-semibold text-menta-oscuro underline">
+            Volver a ingresar
+          </Link>
+        </p>
       </form>
     );
   }
