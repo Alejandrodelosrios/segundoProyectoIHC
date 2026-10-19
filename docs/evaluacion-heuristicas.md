@@ -47,3 +47,14 @@ sub-issue #24 (pendiente)
 - **Capturas:** `evidencias/h2-antes.png`, `evidencias/h2-despues.png`
 - **Código:** `frontend/componentes/PanelMascota.tsx, frontend/lib/filtros.ts (textoFecha), frontend/componentes/TarjetaMascota.tsx (formatearFecha)`
 - **Issue / commit:** #21
+
+## H3 — Control y libertad del usuario
+ 
+- **Estado:** Corregida
+- **Pantalla o flujo:** `/recuperar`, segundo paso
+- **Explicación:** antes, el segundo paso (código y contraseña nueva) no ofrecía forma de volver, cambiar el correo ni ir a ingresar, y no mostraba qué correo se había escrito. Ahora muestra el correo, permite cambiarlo y tiene el enlace "Volver a ingresar".
+- **Capturas:** ![h3 antes](evidencias/h3-antes.png) ![h3 después](evidencias/h3-despues.png)
+- **Código:** `frontend/componentes/FormularioRecuperar.tsx`
+- **Issue / commit:** #27
+- **Comprobación:** en el paso 2 se ve el correo; "Cambiar correo" vuelve al paso 1 con el correo escrito; "Volver a ingresar" lleva a `/ingresar`; el flujo normal sigue funcionando.
+- **Lo que ya funcionaba:** los formularios de agregar, editar y reprogramar tienen "Cancelar", que cierra sin guardar.
