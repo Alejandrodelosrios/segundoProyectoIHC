@@ -58,3 +58,40 @@ sub-issue #24 (pendiente)
 - **Issue / commit:** #27
 - **Comprobación:** en el paso 2 se ve el correo; "Cambiar correo" vuelve al paso 1 con el correo escrito; "Volver a ingresar" lleva a `/ingresar`; el flujo normal sigue funcionando.
 - **Lo que ya funcionaba:** los formularios de agregar, editar y reprogramar tienen "Cancelar", que cierra sin guardar.
+
+## H9 — Ayudar a reconocer, diagnosticar y recuperarse de errores
+ 
+- **Estado:** Corregida
+- **Pantalla o flujo:** `/inicio` con la sesión vencida
+- **Explicación:** antes, con la sesión vencida, la acción mostraba "No has iniciado sesion" dentro del panel y la persona no sabía qué hacer. Ahora la app lleva a `/ingresar` con el aviso "Tu sesión venció. Ingresa de nuevo para continuar."
+- **Capturas:** ![h9 antes](evidencias/h9-antes.png) ![h9 después](evidencias/h9-despues.png)
+- **Código:** `frontend/lib/api.ts` (`pedir`), `frontend/app/ingresar/page.tsx`, `frontend/componentes/FormularioIngreso.tsx`
+- **Issue / commit:** #26
+- **Comprobación:** al borrar la cookie de sesión y cambiar un filtro, redirige a `/ingresar` con el aviso; una contraseña incorrecta en el login sigue mostrando su error en el formulario sin redirigir; con sesión válida todo funciona normal.
+
+## H6 — Reconocer antes que recordar
+ 
+- **Estado:** Cumple
+- **Pantalla o flujo:** `/inicio`, formulario de Reprogramar y filtros activos
+- **Cómo se comprobó:** al pulsar "Reprogramar", el formulario muestra el nombre de la mascota, el cuidado y la fecha actual, así que la persona no debe recordar de qué tarjeta venía. Los filtros activos se ven como chips que se pueden quitar.
+- **Captura:** ![h6](evidencias/h6-reprogramar.png)
+- **Código:** `frontend/componentes/PanelMascota.tsx` (formulario de reprogramación), `frontend/componentes/FiltrosMascotas.tsx` (chips)
+<!-- PENDIENTE: comprobar en pantalla, tomar la captura y ajustar el texto a lo que realmente se vio. -->
+ 
+## H7 — Flexibilidad y eficiencia de uso
+ 
+- **Estado:** Cumple
+- **Pantalla o flujo:** `/inicio`, filtros de la lista
+- **Cómo se comprobó:** el panel ofrece filtros por nombre, estado, tipo de cuidado y fecha (próximos 7 días, este mes o un rango), con "Limpiar filtros" y chips para quitar uno solo. Se combinaron dos filtros y se quitó uno desde su chip.
+- **Captura:** ![h7](evidencias/h7-filtros.png)
+- **Código:** `frontend/componentes/FiltrosMascotas.tsx`, `frontend/lib/filtros.ts`
+- **Observación para mejora futura:** no hay una opción para agregar otro cuidado reutilizando los datos de la mascota.
+
+## H10 — Ayuda y documentación
+ 
+- **Estado:** Cumple
+- **Pantalla o flujo:** `/inicio` (agregar, editar y tarjeta realizada) y formularios de acceso
+- **Cómo se comprobó:** los formularios traen pistas junto a los campos ("Por ejemplo: perro, gato", "Por ejemplo: vacuna", "Mínimo 8 caracteres"). Al editar, la fecha aparece bloqueada con la indicación de usar el botón de reprogramar. La tarjeta de un cuidado realizado explica por qué no se puede editar ni reprogramar.
+- **Capturas:** ![h10 pistas](evidencias/h10-pistas.png)
+- **Código:** `frontend/componentes/FormularioMascota.tsx` (prop `ayuda`), `frontend/componentes/CampoTexto.tsx`, `frontend/componentes/TarjetaMascota.tsx`
+- **Observación para mejora futura:** no existe ayuda general (preguntas frecuentes o tutorial); por el tamaño de la app no se considera un problema.
