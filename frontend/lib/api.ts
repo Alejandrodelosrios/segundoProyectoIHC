@@ -36,6 +36,10 @@ async function pedir<T>(ruta: string, opciones: Opciones = {}): Promise<T> {
   const datos = await respuesta.json().catch(() => null);
 
   if (!respuesta.ok) {
+    if (respuesta.status ===401 && !ruta.startsWith("/auth/") && typeof window !== "undefined"){
+      window.location.assign("/ingresar?sesion=vencida");
+      throw new ErrorApi("Tu sesión venció. Vuelve a ingresar.", 401);
+    }
     const mensaje =
       typeof datos?.detail === "string"
         ? datos.detail

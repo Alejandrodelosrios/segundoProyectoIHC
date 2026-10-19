@@ -10,9 +10,9 @@ import Boton from "./Boton";
 import CampoTexto from "./CampoTexto";
 import MensajeError from "./MensajeError";
 
-type Props = { cuentaCreada?: boolean };
+type Props = { cuentaCreada?: boolean; sesionVencida?: boolean };
 
-export default function FormularioIngreso({ cuentaCreada = false }: Props) {
+export default function FormularioIngreso({ cuentaCreada = false, sesionVencida = false }: Props) {
   const router = useRouter();
   const [correo, setCorreo] = useState("");
   const [contrasena, setContrasena] = useState("");
@@ -50,6 +50,14 @@ export default function FormularioIngreso({ cuentaCreada = false }: Props) {
           className="rounded-lg border border-emerald-300 bg-emerald-50 p-3 text-sm text-emerald-800"
         >
           Cuenta creada. Ahora inicia sesión.
+        </p>
+      )}
+      {sesionVencida && (
+        <p
+          role="status"
+          className="rounded-lg border border-amber-300 bg-amber-50 p-3 text-sm text-amber-900"
+        >
+          Tu sesión venció. Ingresa de nuevo para continuar.
         </p>
       )}
       <MensajeError mensaje={errorGeneral} />
