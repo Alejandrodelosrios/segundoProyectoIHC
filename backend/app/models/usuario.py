@@ -17,3 +17,4 @@ class Usuario(Base):
 
     # relacion
     mascotas = relationship("Mascota", back_populates="usuario")
+    historial = relationship("Historial",back_populates="usuario") 

@@ -1,5 +1,5 @@
 from datetime import date
-from sqlalchemy import String,Date,ForeignKey
+from sqlalchemy import String,Date,ForeignKey,Boolean
 from sqlalchemy.orm import Mapped, mapped_column,relationship
 from app.base_datos import Base
 
@@ -15,7 +15,9 @@ class Mascota(Base):
     cuidado: Mapped[str] = mapped_column(String(100))
     fecha_cuidado: Mapped[date] = mapped_column(Date)
     estado: Mapped[str] = mapped_column(String(20),default=PENDIENTE)
+    eliminada: Mapped[bool] = mapped_column(Boolean, default=False)
     usuario_id: Mapped[int] = mapped_column(ForeignKey("usuarios.id"))
 
     # relacion
     usuario = relationship("Usuario", back_populates="mascotas")
+    historial=relationship("Historial", back_populates="mascota")
