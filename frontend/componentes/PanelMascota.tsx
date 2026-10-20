@@ -169,7 +169,7 @@ export default function PanelMascotas() {
   }
 
   return (
-    <section className="flex flex-col gap-4">
+    <section className="flex w-full flex-col gap-4">
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-2xl font-bold">Mis mascotas</h2>
         <Boton texto="Agregar mascota" alClic={abrirNueva} />
@@ -266,7 +266,7 @@ export default function PanelMascotas() {
         )
       ) : (
         <div className="grid gap-4 sm:grid-cols-2">
-          {mascotas.map((mascota) => (
+           {[...mascotas].sort((a, b) => Number(a.estado === "realizado") - Number(b.estado === "realizado")).map((mascota) => (
             <TarjetaMascota
               key={mascota.id}
               mascota={mascota}
