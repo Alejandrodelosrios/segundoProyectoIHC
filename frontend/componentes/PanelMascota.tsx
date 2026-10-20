@@ -37,9 +37,10 @@ export default function PanelMascotas() {
   const [guardandoReprogramacion, setGuardandoReprogramacion] = useState(false);
   const [errorReprogramacion, setErrorReprogramacion] = useState("");
   const [filtros, setFiltros] = useState<FiltrosPantalla>(FILTROS_VACIOS);
+  const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const filtrosRef = useRef(filtros);
   const peticionActual = useRef(0);
-  const primeraCarga = useRef(true);
+  const primeraCarga = useRef(true);   
 
   // Carga la lista desde el servidor usando los filtros vigentes
   async function cargar() {
@@ -174,9 +175,15 @@ export default function PanelMascotas() {
         <h2 className="text-2xl font-bold">Mis mascotas</h2>
         <Boton texto="Agregar mascota" alClic={abrirNueva} />
       </div>
-
-      <FiltrosMascotas filtros={filtros} alCambiar={setFiltros} errorRango={validarRango(filtros)} />
-
+      <FiltrosMascotas
+        filtros={filtros}
+        alCambiar={setFiltros}
+        errorRango={validarRango(filtros)}
+        mostrarFiltros={mostrarFiltros}
+        alAlternarFiltros={() =>
+        setMostrarFiltros((anterior) => !anterior)
+        }
+      />
       <MensajeError mensaje={error} />
       <MensajeExito mensaje={exito} />
 
