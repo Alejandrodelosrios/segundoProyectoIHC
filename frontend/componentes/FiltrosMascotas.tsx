@@ -16,7 +16,14 @@ type Props = {
   errorRango?: string;
 };
 
-const claseCampo = "rounded-lg border border-arena bg-white px-3 py-2 text-neutral-900";
+// Fitts: min-h-11 = 44 px de alto mínimo, un área cómoda para tocar con el dedo
+const claseCampo = "min-h-11 rounded-lg border border-arena bg-white px-3 py-2 text-neutral-900";
+
+const OPCIONES_ESTADO: { valor: FiltrosPantalla["estado"]; texto: string }[] = [
+  { valor: "", texto: "Todos" },
+  { valor: "pendiente", texto: "Pendientes" },
+  { valor: "realizado", texto: "Realizados" },
+];
 
 export default function FiltrosMascotas({ filtros, alCambiar, errorRango }: Props) {
   const activos = filtrosActivos(filtros);
@@ -45,20 +52,31 @@ export default function FiltrosMascotas({ filtros, alCambiar, errorRango }: Prop
           />
         </div>
 
+        {/* Fitts: el estado pasa de un desplegable (2 toques) a botones (1 toque) */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="filtro-estado" className="text-sm font-semibold">
+          <span id="etiqueta-estado" className="text-sm font-semibold">
             Estado
-          </label>
-          <select
-            id="filtro-estado"
-            value={filtros.estado}
-            onChange={(e) => cambiar("estado", e.target.value as FiltrosPantalla["estado"])}
-            className={claseCampo}
-          >
-            <option value="">Todos</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="realizado">Realizado</option>
-          </select>
+          </span>
+          <div role="group" aria-labelledby="etiqueta-estado" className="flex flex-wrap gap-2">
+            {OPCIONES_ESTADO.map((opcion) => {
+              const seleccionada = filtros.estado === opcion.valor;
+              return (
+                <button
+                  key={opcion.valor || "todos"}
+                  type="button"
+                  aria-pressed={seleccionada}
+                  onClick={() => cambiar("estado", opcion.valor)}
+                  className={`min-h-11 rounded-lg border px-4 py-2 font-semibold ${
+                    seleccionada
+                      ? "border-menta-oscuro bg-menta-oscuro text-white"
+                      : "border-arena bg-white text-tinta hover:bg-menta-claro"
+                  }`}
+                >
+                  {opcion.texto}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         <div className="flex flex-col gap-1">
@@ -131,16 +149,16 @@ export default function FiltrosMascotas({ filtros, alCambiar, errorRango }: Prop
       <MensajeError mensaje={errorRango} />
 
       {activos.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-3">
           <span className="text-sm font-semibold">Filtros activos:</span>
-          <ul className="flex flex-wrap gap-2">
+          <ul className="flex flex-wrap gap-3">
             {activos.map((filtro) => (
               <li key={filtro.clave}>
                 <button
                   type="button"
                   onClick={() => alCambiar(quitarFiltro(filtros, filtro.clave))}
                   aria-label={`Quitar filtro ${filtro.texto}`}
-                  className="flex items-center gap-2 rounded-full border border-arena bg-menta-claro px-3 py-1 text-sm font-medium text-tinta hover:bg-menta"
+                  className="flex min-h-11 items-center gap-2 rounded-full border border-arena bg-menta-claro px-4 py-2 text-sm font-medium text-tinta hover:bg-menta"
                 >
                   {filtro.texto}
                   <span aria-hidden="true">✕</span>
