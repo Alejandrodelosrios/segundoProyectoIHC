@@ -4,6 +4,7 @@ from app.models.mascota import Mascota
 from app.schemas.mascota import MascotaEntrada,MascotaActualizada
 from app.repositories import mascota_repositorio as repo
 from app.repositories import usuario_repositorio as repo_usuario
+from app.services import historial_servicio
 from datetime import date
 
 def obtener_propia(session:Session, mascota_id:int, usuario_id:int) -> Mascota:
@@ -20,6 +21,13 @@ def crear_mascota(session:Session, datos: MascotaEntrada, usuario_id: int):
     if usuario is None:
         raise ErrorDeNegocio("Error no se encontro el usuario",404)
     mascota = repo.crear(session,datos.nombre,datos.sexo,datos.especie,datos.cuidado,datos.fecha_cuidado,usuario_id)
+    historial_servicio.registrar(
+        session,
+        "crear",
+        f"Se creó la mascota '{mascota.nombre}' para {usuario.nombre_completo}.",
+        usuario_id,
+        mascota.id,
+    )
     return mascota
 
 def listar_mascotas(session:Session, usuario_id: int):
@@ -33,17 +41,38 @@ def actualizar_mascota(session:Session, mascota_id:int, datos: MascotaActualizad
     if mascota.estado == "realizado":
         raise ErrorDeNegocio("Este cuidado ya fue realizado, por eso no se puede editar",400)
     mascota = repo.actualizar(session,mascota,datos.nombre,datos.sexo,datos.especie,datos.cuidado)
+    historial_servicio.registrar(
+        session,
+        "actualizar",
+        f"Se actualizó la mascota '{mascota.nombre}' con los nuevos datos.",
+        usuario_id,
+        mascota.id,
+    )
     return mascota
 
 def eliminar_mascota(session:Session, mascota_id:int, usuario_id: int):
     mascota = _obtener_propia(session,mascota_id,usuario_id)
     repo.eliminar(session,mascota)
+    historial_servicio.registrar(
+        session,
+        "eliminar",
+        f"Se eliminó la mascota '{mascota.nombre}'.",
+        usuario_id,
+        mascota.id,
+    )
 
 def marcar_realizado(session:Session,mascota_id:int, usuario_id:int):
     mascota =_obtener_propia(session,mascota_id,usuario_id)
     if mascota.estado == "realizado":
         raise ErrorDeNegocio("La mascota ya esta marcada como realizado",400)
     mascota = repo.cambiar_estado(session,mascota,"realizado")
+    historial_servicio.registrar(
+        session,
+        "realizar",
+        f"Se marcó como realizado el cuidado de '{mascota.nombre}'.",
+        usuario_id,
+        mascota.id,
+    )
     return mascota
 
 def reprogramar_cuidado(session:Session,mascota_id:int,usuario_id:int,nueva_fecha:date):
@@ -53,6 +82,13 @@ def reprogramar_cuidado(session:Session,mascota_id:int,usuario_id:int,nueva_fech
     if nueva_fecha < date.today():
         raise ErrorDeNegocio("La nueva fecha no puede ser anterior a hoy", 400)
     mascota = repo.actualizar_fecha_cuidado(session,mascota,nueva_fecha)
+    historial_servicio.registrar(
+        session,
+        "reprogramar",
+        f"Se reprogramó el cuidado de '{mascota.nombre}' para el {nueva_fecha.isoformat()}.",
+        usuario_id,
+        mascota.id,
+    )
     return mascota
 
 def filtrar_mascotas(session:Session,usuario_id:int,nombre:str|None=None,estado:str|None=None,tipo_cuidado:str|None=None,fecha_desde:date|None=None,fecha_hasta:date|None=None):
