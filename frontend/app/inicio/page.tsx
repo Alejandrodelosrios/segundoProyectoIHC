@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import BotonSalir from "@/componentes/BotonSalir";
 import { obtenerUsuarioActual } from "@/lib/apiServidor";
 import PanelMascotas from "@/componentes/PanelMascota";
+import Boton from "@/componentes/Boton";
 
 export default async function PaginaPrivada() {
   const usuario = await obtenerUsuarioActual();
@@ -15,6 +16,7 @@ export default async function PaginaPrivada() {
         <BotonSalir />
       </header>
       <PanelMascotas/>
+      <Boton texto="Ver historial de acciones" href="/historial" variante="secundario" />
     </main>
   );
 }

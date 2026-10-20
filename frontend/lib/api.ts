@@ -204,3 +204,34 @@ export async function filtrarMascotas(filtros:FiltroCuidado={}){
   const datos = await pedir<MascotaRespuesta[]>(`/mascotas/filtrar${consulta ? `?${consulta}` : ""}`);
   return datos.map(convertirMascota);
 }
+
+export type RegistroHistorial = {
+  id: number;
+  tipoAccion: string;
+  descripcion: string;
+  fechaRegistro: string;
+  mascotaId: number;
+};
+
+type RegistroHistorialRespuesta = {
+  id: number;
+  tipo_accion: string;
+  descripcion: string;
+  fecha_registro: string;
+  mascota_id: number;
+};
+
+function convertirRegistroHistorial(datos: RegistroHistorialRespuesta): RegistroHistorial {
+  return {
+    id: datos.id,
+    tipoAccion: datos.tipo_accion,
+    descripcion: datos.descripcion,
+    fechaRegistro: datos.fecha_registro,
+    mascotaId: datos.mascota_id,
+  };
+}
+
+export async function listarHistorial() {
+  const datos = await pedir<RegistroHistorialRespuesta[]>("/historial");
+  return datos.map(convertirRegistroHistorial);
+}
